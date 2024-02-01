@@ -20,10 +20,10 @@ public class ZipFile implements Archivos{
     public boolean comprimir() {
 
         try {
-        FileOutputStream fos = new FileOutputStream(this.ruta + ".zip");
+        FileOutputStream fos = new FileOutputStream(ruta + ".zip");
         ZipOutputStream zipOut = new ZipOutputStream(fos);
+        File fileToZip = new File(ruta);
 
-        File fileToZip = new File(this.ruta);
         FileInputStream fis = new FileInputStream(fileToZip);
         ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
         zipOut.putNextEntry(zipEntry);

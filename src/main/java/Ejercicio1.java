@@ -1,3 +1,10 @@
+/*con javaFx y trabajando con futuros
+* En el primer ejercicio debes pedir al usuario una URL, descargar la página web en
+esa URL, y una vez descargada del todo mostrar al usuario el contenido. Debes usar
+futuros para sincronizar las dos tareas: descargar y mostrar. Te puede ser de ayuda
+el siguiente enlace:
+* https://zetcode.com/java/readwebpage/*/
+
 import java.io.IOException;
 import java.util.Scanner;
 import java.net.URI;
@@ -10,7 +17,6 @@ import java.util.concurrent.ExecutionException;
 public class Ejercicio1 {
     public static void main(String[] args) throws IOException, InterruptedException {
         Scanner reader = new Scanner(System.in);
-        HttpClient client = HttpClient.newHttpClient(); //Utilizamos Java HttpClient para descargar la página web.
 
         System.out.println("Introduce una URL: ");
         String url = reader.nextLine();

@@ -20,12 +20,11 @@ public class ZipDirectory implements Archivos {
 
     public boolean comprimir() {
         try {
-            FileOutputStream fos = new FileOutputStream(this.ruta + ".zip");
+            FileOutputStream fos = new FileOutputStream(ruta + ".zip");
             ZipOutputStream zipOut = new ZipOutputStream(fos);
-            File fileToZip = new File(this.ruta);
+            File fileToZip = new File(ruta);
 
             zipDirectory(fileToZip, fileToZip.getName(), zipOut);
-
             zipOut.close();
             fos.close();
 
@@ -51,9 +50,9 @@ public class ZipDirectory implements Archivos {
         }
     }
 
-    private void zipFile(File fileToZip, String baseName, ZipOutputStream zipOut) throws IOException {
+    private void zipFile(File fileToZip, String fileName, ZipOutputStream zipOut) throws IOException {
         FileInputStream fis = new FileInputStream(fileToZip);
-        ZipEntry zipEntry = new ZipEntry(baseName + "/" + fileToZip.getName());
+        ZipEntry zipEntry = new ZipEntry(fileName + "/" + fileToZip.getName());
         zipOut.putNextEntry(zipEntry);
 
         byte[] bytes = new byte[1024];

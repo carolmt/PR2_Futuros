@@ -7,18 +7,17 @@ import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
-
-/*En el segundo ejercicio debes pedir al usuario 2 rutas. Debe comprimir la carpeta /
-fichero de la primera ruta en formato ZIP. Una vez terminado de crear el archivo ZIP
-debe moverlo a la segunda ruta facilitada por el usuario*/
 public class Ejercicio2 {
     public static void main(String[] args) throws IOException {
         Scanner reader = new Scanner(System.in);
 
         System.out.println("Introduce la ruta de la carpeta/fichero que deseas comprimir: ");
         String archivoComprimir = reader.nextLine();
+        File from = new File (archivoComprimir);
+
         System.out.println("Introduce la ruta dónde quieras guardar el archivo comprimido: ");
         String rutaComprmido = reader.nextLine();
+        File to = new File (rutaComprmido);
 
 
         File fileToCompress = new File(archivoComprimir);
@@ -31,6 +30,12 @@ public class Ejercicio2 {
                     .thenAccept(compressionResult -> {
                         if (compressionResult) {
                             System.out.println("Directorio comprimido con éxito.");
+                            try {
+                                Files.move(Path.of(archivoComprimir + ".zip"), Path.of(rutaComprmido + "/" + from.getName() + ".zip"), StandardCopyOption.REPLACE_EXISTING);
+                                System.out.println("Archivo movido con éxito.");
+                            } catch (IOException e) {
+                                System.out.println("Error al mover el archivo: " + e.getMessage());
+                            }
                         } else {
                             System.out.println("Error al comprimir el directorio.");
                         }
@@ -47,6 +52,12 @@ public class Ejercicio2 {
                     .thenAccept(compressionResult -> {
                         if (compressionResult) {
                             System.out.println("Archivo comprimido con éxito.");
+                            try {
+                                Files.move(Path.of(archivoComprimir + ".zip"), Path.of(rutaComprmido + "/" + from.getName() + ".zip"), StandardCopyOption.REPLACE_EXISTING);
+                                System.out.println("Archivo movido con éxito.");
+                            } catch (IOException e) {
+                                System.out.println("Error al mover el archivo: " + e.getMessage());
+                            }
                         } else {
                             System.out.println("Error al comprimir el archivo.");
                         }
