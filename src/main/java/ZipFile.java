@@ -17,9 +17,8 @@ public class ZipFile implements Archivos{
         this.ruta = ruta;
     }
 
-    public boolean comprimir() {
+    public boolean comprimir(String ruta) throws IOException  {
 
-        try {
         FileOutputStream fos = new FileOutputStream(ruta + ".zip");
         ZipOutputStream zipOut = new ZipOutputStream(fos);
         File fileToZip = new File(ruta);
@@ -33,15 +32,11 @@ public class ZipFile implements Archivos{
         while((length = fis.read(bytes)) >= 0) {
             zipOut.write(bytes, 0, length);
         }
-
         zipOut.close();
         fis.close();
         fos.close();
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
+    return true;
     }
 }
+
 

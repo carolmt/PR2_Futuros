@@ -1,5 +1,5 @@
 import java.io.IOException;
 
 public interface Archivos {
-    public boolean comprimir() throws IOException;
+    public boolean comprimir(String ruta) throws IOException;
 }

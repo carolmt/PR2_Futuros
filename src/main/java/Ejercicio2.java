@@ -26,12 +26,12 @@ public class Ejercicio2 {
             System.out.println("Se ha detectado un directorio.");
             ZipDirectory zipDirectory = new ZipDirectory(archivoComprimir);
 
-            CompletableFuture.supplyAsync(() -> zipDirectory.comprimir())
+            CompletableFuture.supplyAsync(() -> zipDirectory.comprimir(archivoComprimir))
                     .thenAccept(compressionResult -> {
                         if (compressionResult) {
                             System.out.println("Directorio comprimido con éxito.");
                             try {
-                                Files.move(Path.of(archivoComprimir + ".zip"), Path.of(rutaComprmido + "/" + from.getName() + ".zip"), StandardCopyOption.REPLACE_EXISTING);
+                                Files.move(Path.of(archivoComprimir + ".zip"), Path.of(rutaComprmido, from.getName() + ".zip"), StandardCopyOption.REPLACE_EXISTING);
                                 System.out.println("Archivo movido con éxito.");
                             } catch (IOException e) {
                                 System.out.println("Error al mover el archivo: " + e.getMessage());
@@ -45,10 +45,19 @@ public class Ejercicio2 {
                         return null;
                     });
 
+
+
+
         } else if (fileToCompress.isFile()) {
             System.out.println("Se ha detectado un archivo.");
             ZipFile zipFile = new ZipFile(archivoComprimir);
-            CompletableFuture.supplyAsync(() -> zipFile.comprimir())
+            CompletableFuture.supplyAsync(() -> {
+                        try {
+                            return zipFile.comprimir(archivoComprimir);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
                     .thenAccept(compressionResult -> {
                         if (compressionResult) {
                             System.out.println("Archivo comprimido con éxito.");

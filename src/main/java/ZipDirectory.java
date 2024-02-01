@@ -18,7 +18,7 @@ public class ZipDirectory implements Archivos {
         this.ruta = ruta;
     }
 
-    public boolean comprimir() {
+    public boolean comprimir(String ruta) {
         try {
             FileOutputStream fos = new FileOutputStream(ruta + ".zip");
             ZipOutputStream zipOut = new ZipOutputStream(fos);
