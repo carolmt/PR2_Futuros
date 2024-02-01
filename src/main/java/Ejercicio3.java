@@ -28,6 +28,7 @@ public class Ejercicio3 {
         urls.add("https://www.ebay.es/");
 
         List<CompletableFuture<String>> descargasFuturas = new ArrayList<>();
+        String rutaComprimido = ("C:\\Users\\carol\\Documents\\DAM\\PSP\\T4\\contenidoUrls.txt");
 
         for (String url : urls) {
             descargasFuturas.add(
@@ -41,43 +42,31 @@ public class Ejercicio3 {
             );
         }
 
-        CompletableFuture.allOf(descargasFuturas.toArray(new CompletableFuture[0])).join(); //espera a que toda la lista este descargada
+        CompletableFuture<Void> escrituraCompleta = CompletableFuture.allOf(descargasFuturas.toArray(new CompletableFuture[0]))
+                .thenRun(() -> {
+                    try (FileWriter fichero = new FileWriter(rutaComprimido)) {
+                        PrintWriter pw = new PrintWriter(fichero);
 
-        try (FileWriter fichero = new FileWriter("C:\\Users\\carol\\Documents\\DAM\\PSP\\T4\\contenidoUrls.txt")) {
-            PrintWriter pw = new PrintWriter(fichero);
+                        for (CompletableFuture<String> descargaFutura : descargasFuturas) {
+                            pw.println(descargaFutura.get());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
 
-            for (CompletableFuture<String> descargaFutura : descargasFuturas) {
-                pw.println(descargaFutura.get());
+        escrituraCompleta.thenAccept((voidResult) -> {
+            try {
+                comprimir(rutaComprimido);
+                System.out.println("Contenido descargado, escrito en el archivo y comprimido.");
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        });
 
-        System.out.println("Contenido descargado y escrito en el archivo.");
-
-        try {
-            FileOutputStream fos = new FileOutputStream("contenidoUrls.zip");
-            ZipOutputStream zipOut = new ZipOutputStream(fos);
-
-            File fileToZip = new File("C:\\Users\\carol\\Documents\\DAM\\PSP\\T4\\contenidoUrls.txt");
-            FileInputStream fis = new FileInputStream(fileToZip);
-            ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
-            zipOut.putNextEntry(zipEntry);
-
-            byte[] bytes = new byte[1024];
-            int length;
-            while ((length = fis.read(bytes)) >= 0) {
-                zipOut.write(bytes, 0, length);
-            }
-
-            zipOut.close();
-            fis.close();
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        escrituraCompleta.join(); // Esperar a que la escritura esté completa antes de imprimir el mensaje.
     }
+
     private static String descargarContenido(String url) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
 
@@ -89,5 +78,20 @@ public class Ejercicio3 {
         HttpResponse<String> respuesta = client.send(solicitud, HttpResponse.BodyHandlers.ofString());
 
         return respuesta.body();
+    }
+
+    private static boolean comprimir(String ruta) throws IOException {
+        try (FileOutputStream fos = new FileOutputStream(ruta + ".zip");
+             ZipOutputStream zipOut = new ZipOutputStream(fos)) {
+
+            ZipEntry zipEntry = new ZipEntry("contenidoUrls.txt");
+            zipOut.putNextEntry(zipEntry);
+
+            byte[] bytes = ruta.getBytes();
+            zipOut.write(bytes, 0, bytes.length);
+
+            zipOut.closeEntry();
+        }
+        return true;
     }
 }
